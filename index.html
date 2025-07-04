@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight - The Ultimate Link Dispenser</title>
+    <title>Moonlight - Ultimate Link Dispenser</title>
     <style>
         * {
             margin: 0;
@@ -237,7 +237,7 @@
 
     <!-- Attribution -->
     <div class="attribution">
-        Inspired by skipschool | Made by thefakesydney
+        inspired by skipschool
     </div>
 
     <script>
@@ -314,6 +314,29 @@
         // Generate meteors continuously
         setInterval(createMeteor, 300);
 
+        // ABOUT:BLANK CLOAKING FUNCTION
+        function openCloakedLink(url) {
+            // Open about:blank window
+            var win = window.open();
+            
+            // Create iframe element
+            var iframe = win.document.createElement('iframe');
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.style.margin = "0";
+            iframe.style.padding = "0";
+            iframe.src = url;
+            
+            // Set up the blank page
+            win.document.body.style.margin = "0";
+            win.document.body.style.padding = "0";
+            win.document.body.appendChild(iframe);
+            
+            // Set a generic title to avoid detection
+            win.document.title = "New Tab";
+        }
+
         // FORM SUBMISSION HANDLER
         document.getElementById('linkForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -338,8 +361,8 @@
             // Select random link from category
             const randomLink = categoryLinks[Math.floor(Math.random() * categoryLinks.length)];
             
-            // Open link in new tab
-            window.open(randomLink, '_blank');
+            // Open link using about:blank cloaking
+            openCloakedLink(randomLink);
         });
 
         // INSTRUCTIONS FOR ADDING LINKS:
