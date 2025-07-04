@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonlight - Ultimate Link Dispenser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Meteor particles background */
+        .meteor {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(45deg, #fff, #00d4ff);
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00d4ff, 0 0 12px #00d4ff;
+            animation: meteor-fall linear infinite;
+        }
+
+        @keyframes meteor-fall {
+            0% {
+                transform: translateY(-100vh) translateX(-50px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Main card */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Title */
+        .title {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            background: linear-gradient(45deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        /* Custom dropdown arrow */
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00d4ff;
+            pointer-events: none;
+        }
+
+        /* Button */
+        .open-btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .open-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Attribution */
+        .attribution {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #888;
+            font-size: 14px;
+            opacity: 0.8;
+            z-index: 100;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .attribution {
+                bottom: 10px;
+                right: 10px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Meteor particles container -->
+    <div id="meteors"></div>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="card">
+            <h1 class="title">Moonlight</h1>
+            <p class="subtitle">Ultimate Link Dispenser</p>
+            
+            <form id="linkForm">
+                <div class="form-group">
+                    <label for="category">Select Category:</label>
+                    <div class="select-wrapper">
+                        <select id="category" name="category">
+                            <!-- GAMING CATEGORY -->
+                            <option value="">Choose a category...</option>
+                            <option value="gaming">🎮 Gaming</option>
+                            <!-- ENTERTAINMENT CATEGORY -->
+                            <option value="entertainment">🎬 Entertainment</option>
+                            <!-- EDUCATION CATEGORY -->
+                            <option value="education">📚 Education</option>
+                            <!-- SOCIAL CATEGORY -->
+                            <option value="social">💬 Social</option>
+                            <!-- TOOLS CATEGORY -->
+                            <option value="tools">🔧 Tools</option>
+                            <!-- MUSIC CATEGORY -->
+                            <option value="music">🎵 Music</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="open-btn">Open Link</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attribution -->
+    <div class="attribution">
+        inspired by skipschool
+    </div>
+
+    <script>
+        // LINK STORAGE OBJECT
+        // Add your proxy links here organized by category
+        const linkCategories = {
+            gaming: [
+                // ADD GAMING PROXY LINKS HERE
+                // Example: "https://your-proxy-site.com/game1",
+                // Example: "https://your-proxy-site.com/game2",
+                "https://example.com/gaming-proxy-1",
+                "https://example.com/gaming-proxy-2"
+            ],
+            entertainment: [
+                // ADD ENTERTAINMENT PROXY LINKS HERE
+                // Example: "https://your-proxy-site.com/netflix",
+                // Example: "https://your-proxy-site.com/youtube",
+                "https://example.com/entertainment-proxy-1",
+                "https://example.com/entertainment-proxy-2"
+            ],
+            education: [
+                // ADD EDUCATION PROXY LINKS HERE
+                // Example: "https://your-proxy-site.com/khan-academy",
+                // Example: "https://your-proxy-site.com/coursera",
+                "https://example.com/education-proxy-1",
+                "https://example.com/education-proxy-2"
+            ],
+            social: [
+                // ADD SOCIAL MEDIA PROXY LINKS HERE
+                // Example: "https://your-proxy-site.com/discord",
+                // Example: "https://your-proxy-site.com/reddit",
+                "https://example.com/social-proxy-1",
+                "https://example.com/social-proxy-2"
+            ],
+            tools: [
+                // ADD TOOLS PROXY LINKS HERE
+                // Example: "https://your-proxy-site.com/photoshop",
+                // Example: "https://your-proxy-site.com/office",
+                "https://example.com/tools-proxy-1",
+                "https://example.com/tools-proxy-2"
+            ],
+            music: [
+                // ADD MUSIC PROXY LINKS HERE
+                // Example: "https://your-proxy-site.com/spotify",
+                // Example: "https://your-proxy-site.com/soundcloud",
+                "https://example.com/music-proxy-1",
+                "https://example.com/music-proxy-2"
+            ]
+        };
+
+        // CREATE FALLING METEOR PARTICLES
+        function createMeteor() {
+            const meteor = document.createElement('div');
+            meteor.className = 'meteor';
+            
+            // Random starting position
+            meteor.style.left = Math.random() * 100 + '%';
+            meteor.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            meteor.style.animationDelay = Math.random() * 2 + 's';
+            
+            // Random size variation
+            const size = Math.random() * 2 + 1;
+            meteor.style.width = size + 'px';
+            meteor.style.height = size + 'px';
+            
+            document.getElementById('meteors').appendChild(meteor);
+            
+            // Remove meteor after animation
+            setTimeout(() => {
+                meteor.remove();
+            }, 7000);
+        }
+
+        // Generate meteors continuously
+        setInterval(createMeteor, 300);
+
+        // FORM SUBMISSION HANDLER
+        document.getElementById('linkForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedCategory = document.getElementById('category').value;
+            
+            // Check if category is selected
+            if (!selectedCategory) {
+                alert('Please select a category first!');
+                return;
+            }
+            
+            // Get links for selected category
+            const categoryLinks = linkCategories[selectedCategory];
+            
+            // Check if category has links
+            if (!categoryLinks || categoryLinks.length === 0) {
+                alert('No links available for this category yet. Please add some links!');
+                return;
+            }
+            
+            // Select random link from category
+            const randomLink = categoryLinks[Math.floor(Math.random() * categoryLinks.length)];
+            
+            // Open link in new tab
+            window.open(randomLink, '_blank');
+        });
+
+        // INSTRUCTIONS FOR ADDING LINKS:
+        /*
+        TO ADD NEW LINKS:
+        1. Find the category you want to add links to in the 'linkCategories' object above
+        2. Add your proxy links to the array for that category
+        3. Format: "https://your-proxy-site.com/target-site",
+        4. Make sure to include the comma after each link except the last one
+        5. Example:
+           gaming: [
+               "https://proxy1.com/coolmathgames",
+               "https://proxy2.com/steam",
+               "https://proxy3.com/roblox"
+           ]
+        
+        TO ADD NEW CATEGORIES:
+        1. Add a new option to the select element in the HTML
+        2. Add a new property to the linkCategories object
+        3. Follow the same format as existing categories
+        */
+    </script>
+</body>
+</html>
